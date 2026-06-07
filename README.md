@@ -1,4 +1,4 @@
-﻿# Istabul_Git-Diff_test
+# Istabul_Git-Diff_test
 
 ## 📊 Coverage-Diff Integration
 
