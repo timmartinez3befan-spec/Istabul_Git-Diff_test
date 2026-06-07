@@ -82,15 +82,33 @@ Der Workflow `.github/workflows/nightly-coverage.yml` ist bereits konfiguriert:
 
 - **Trigger**: Jeden Tag um 02:00 UTC (anpassbar im Workflow)
 - **Alternativ**: Manueller Trigger über GitHub Actions Tab
-- **Ausgabe**: GitHub Pages (automatisch deployt)
+- **Ausgabe**: GitHub Pages (automatisch deployt) + Artifacts
 
 ### Workflow-Funktion
 
 1. ✅ Checked out den aktuellen Code
 2. ✅ Führt alle Coverage-Tests aus
-3. ✅ Generiert HTML-Report mit Vergleich
-4. ✅ **Deployt zu GitHub Pages automatisch** 🚀
-5. ✅ Speichert den Report auch als GitHub Artifact (30 Tage)
+3. ✅ Generiert HTML-Report (falls Coverage erfolgreich)
+4. ✅ Erstellt Fallback-Report (falls Tests fehlschlagen)
+5. ✅ **Deployt zu GitHub Pages automatisch** 🚀
+6. ✅ Speichert den Report auch als GitHub Artifact (30 Tage)
+
+### ❗ Falls der Workflow fehlschlägt
+
+**Fehler**: `no such file or directory, scandir '/coverage-report'`
+
+Das ist normal beim ersten Run! Die Tests müssen erst erfolgreich durchlaufen. 
+
+**Lösung**: 
+1. Prüfe die **Workflow Logs** in GitHub Actions:
+   - Suche nach "Run coverage tests"
+   - Schaue auf die Fehler der Tests
+2. Häufige Gründe:
+   - Playwright Browser nicht installed
+   - Tests schlagen fehl (Assertion-Fehler)
+   - Fehlende Test-Dateien
+
+**Workaround**: Der Workflow erstellt automatisch einen Fallback-Report, wenn die Tests fehlschlagen.
 
 ### 📱 Report ansehen auf GitHub Pages
 
@@ -107,7 +125,7 @@ https://<dein-username>.github.io/<dein-repo>/nightly/<run-number>/index.html
 
 **Beispiel:**
 ```
-https://mytimmartinez3befan-spec.github.io/Istabul_Git-Diff_test/nightly/42/index.html
+https://timmartinez3befan-spec.github.io/Istabul_Git-Diff_test/nightly/1/index.html
 ```
 
 ### 🗂️ Report-Struktur auf GitHub Pages
@@ -126,7 +144,7 @@ Jeder Run bekommt seine eigene Nummer und einen separaten Ordner.
 
 ### 📊 Im GitHub Actions Tab ansehen
 
-Nach einer erfolgreichen Nightly Run:
+Nach einer Nightly Run (erfolgreich oder fehlgeschlagen):
 1. Gehe zu deinem GitHub Repo → **Actions** Tab
 2. Klicke auf die neueste "Nightly Coverage Report" Run
 3. Lade die `coverage-report-<run-id>` Artifact herunter (optional)
