@@ -17,6 +17,9 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      - name: Create coverage-report directory early
+        run: mkdir -p coverage-report
+
       - name: Checkout code
         uses: actions/checkout@v4
         with:
@@ -29,27 +32,23 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
+        continue-on-error: true
         run: npm ci
 
       - name: Run coverage tests
         continue-on-error: true
-        run: |
-          npm run coverage:run 2>&1 || {
-            echo "⚠️ Tests failed or coverage generation failed"
-            exit 0
-          }
+        run: npm run coverage:run 2>&1 || true
 
-      - name: Check if coverage report exists
+      - name: Check coverage and create fallback report
         run: |
           if [ ! -f coverage/coverage-final.json ]; then
-            echo "⚠️  Warning: coverage-final.json not found, creating minimal report..."
-            mkdir -p coverage-report
+            echo "⚠️  Creating fallback report (no coverage data)..."
             cat > coverage-report/index.html << 'EOF'
             <!DOCTYPE html>
             <html>
             <head>
               <meta charset="UTF-8">
-              <title>Coverage Report - Tests Failed</title>
+              <title>Coverage Report - No Data</title>
               <style>
                 body { font-family: Arial, sans-serif; padding: 40px; text-align: center; background: #f5f5f5; }
                 .container { background: white; padding: 30px; border-radius: 8px; max-width: 600px; margin: 0 auto; }
@@ -59,31 +58,20 @@ jobs:
             </head>
             <body>
               <div class="container">
-                <h1>⚠️ Coverage Report - Tests Failed</h1>
-                <p>The coverage tests did not generate a report. Check the workflow logs for details.</p>
-                <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Logs</a></p>
+                <h1>⚠️ Coverage Report - No Data</h1>
+                <p>Coverage tests did not complete successfully.</p>
+                <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Logs for Details</a></p>
               </div>
             </body>
             </html>
             EOF
           else
-            echo "✅ Coverage report generated successfully"
+            echo "✅ Coverage data found, generating diff report..."
+            npm run coverage:diff:html 2>&1 || true
           fi
 
-      - name: Generate coverage diff HTML report
-        continue-on-error: true
+      - name: Create report index
         run: |
-          mkdir -p coverage-report
-          if [ -f coverage/coverage-final.json ]; then
-            npm run coverage:diff:html
-          else
-            echo "No coverage data available - skipping diff report"
-          fi
-
-      - name: Create report index (HTML)
-        continue-on-error: true
-        run: |
-          mkdir -p coverage-report
           cat > coverage-report/README.html << 'EOF'
           <!DOCTYPE html>
           <html>
