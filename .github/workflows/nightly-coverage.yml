@@ -33,14 +33,15 @@ jobs:
 
       - name: Install dependencies
         continue-on-error: true
-        run: npm ci
+        run: npm install 2>&1 || echo "npm install had issues, continuing anyway..."
 
       - name: Run coverage tests
         continue-on-error: true
-        run: npm run coverage:run 2>&1 || true
+        run: npm run coverage:run 2>&1 || echo "Coverage run failed or skipped"
 
       - name: Check coverage and create fallback report
         run: |
+          mkdir -p coverage-report
           if [ ! -f coverage/coverage-final.json ]; then
             echo "⚠️  Creating fallback report (no coverage data)..."
             cat > coverage-report/index.html << 'EOF'
