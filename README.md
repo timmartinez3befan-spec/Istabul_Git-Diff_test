@@ -1,4 +1,2 @@
 ﻿# Istabul_Git-Diff_test
-Test12345
-Test7867
-Wird das angezeigt?
+ Istanbul Coverage x Git diff fusion um die coverage von neuem code zu testen. 
