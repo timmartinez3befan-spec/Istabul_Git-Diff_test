@@ -6,7 +6,11 @@
   "scripts": {
     "test": "npx playwright test",
     "coverage:run": "nyc --reporter=json --reporter=lcov npx playwright test",
-    "coverage:diff": "node scripts/coverage-diff.js"
+    "coverage:diff": "node scripts/coverage-diff.js",
+    "coverage:diff:html": "node scripts/coverage-diff.js --html=coverage-report/index.html",
+    "coverage:history:save": "node scripts/coverage-history.js save",
+    "coverage:history:list": "node scripts/coverage-history.js list",
+    "coverage:history:clean": "node scripts/coverage-history.js clean"
   },
   "repository": {
     "type": "git",
