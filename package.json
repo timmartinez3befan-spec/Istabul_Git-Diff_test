@@ -3,7 +3,15 @@
   "version": "1.0.0",
   "description": "��#\u0000 \u0000I\u0000s\u0000t\u0000a\u0000b\u0000u\u0000l\u0000_\u0000G\u0000i\u0000t\u0000-\u0000D\u0000i\u0000f\u0000f\u0000_\u0000t\u0000e\u0000s\u0000t\u0000\r\u0000 \u0000T\u0000e\u0000s\u0000t\u00001\u00002\u00003\u00004\u00005\u0000\r\u0000 \u0000T\u0000e\u0000s\u0000t\u00007\u00008\u00006\u00007\u0000\r\u0000 \u0000",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "npx playwright test",
+    "coverage:run": "nyc --reporter=json --reporter=lcov npx playwright test",
+    "coverage:diff": "node scripts/coverage-diff.js",
+    "coverage:diff:html": "node scripts/coverage-diff.js --html=coverage-report/index.html",
+    "coverage:history:save": "node scripts/coverage-history.js save",
+    "coverage:history:list": "node scripts/coverage-history.js list",
+    "coverage:history:clean": "node scripts/coverage-history.js clean"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/timmartinez3befan-spec/Istabul_Git-Diff_test.git"
@@ -17,6 +25,24 @@
   "homepage": "https://github.com/timmartinez3befan-spec/Istabul_Git-Diff_test#readme",
   "devDependencies": {
     "@playwright/test": "^1.60.0",
-    "@types/node": "^25.9.1"
+    "@types/node": "^25.9.1",
+    "nyc": "^18.0.0",
+    "v8-to-istanbul": "^9.3.0"
+  }
+  ,
+  "nyc": {
+    "extension": [
+      ".ts",
+      ".js"
+    ],
+    "exclude": [
+      "**/tests/**",
+      "**/playwright-report/**"
+    ],
+    "reporter": [
+      "lcov",
+      "json"
+    ],
+    "all": true
   }
 }

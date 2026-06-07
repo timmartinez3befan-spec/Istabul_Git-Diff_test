@@ -6,3 +6,11 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# Coverage & Reports
+/coverage/
+/coverage-report/
+/.nyc_output/
+/coverage-history/
+*.lcov
+
