@@ -44,28 +44,7 @@ jobs:
           mkdir -p coverage-report
           if [ ! -f coverage/coverage-final.json ]; then
             echo "⚠️  Creating fallback report (no coverage data)..."
-            cat > coverage-report/index.html << 'EOF'
-            <!DOCTYPE html>
-            <html>
-            <head>
-              <meta charset="UTF-8">
-              <title>Coverage Report - No Data</title>
-              <style>
-                body { font-family: Arial, sans-serif; padding: 40px; text-align: center; background: #f5f5f5; }
-                .container { background: white; padding: 30px; border-radius: 8px; max-width: 600px; margin: 0 auto; }
-                h1 { color: #f56565; }
-                p { color: #666; line-height: 1.6; }
-              </style>
-            </head>
-            <body>
-              <div class="container">
-                <h1>⚠️ Coverage Report - No Data</h1>
-                <p>Coverage tests did not complete successfully.</p>
-                <p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Logs for Details</a></p>
-              </div>
-            </body>
-            </html>
-            EOF
+            printf '%s\n' '<!DOCTYPE html>' '<html>' '<head>' '<meta charset="UTF-8">' '<title>Coverage Report - No Data</title>' '<style>' 'body { font-family: Arial, sans-serif; padding: 40px; text-align: center; background: #f5f5f5; }' '.container { background: white; padding: 30px; border-radius: 8px; max-width: 600px; margin: 0 auto; }' 'h1 { color: #f56565; }' 'p { color: #666; line-height: 1.6; }' '</style>' '</head>' '<body>' '<div class="container">' '<h1>⚠️ Coverage Report - No Data</h1>' '<p>Coverage tests did not complete successfully.</p>' '<p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Logs for Details</a></p>' '</div>' '</body>' '</html>' > coverage-report/index.html
           else
             echo "✅ Coverage data found, generating diff report..."
             npm run coverage:diff:html 2>&1 || true
@@ -73,39 +52,8 @@ jobs:
 
       - name: Create report index
         run: |
-          cat > coverage-report/README.html << 'EOF'
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Coverage Reports</title>
-            <style>
-              body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; padding: 20px; }
-              .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-              h1 { color: #667eea; margin-bottom: 10px; }
-              .info { background: #eef2ff; padding: 15px; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #667eea; }
-              .report-link { display: inline-block; margin: 10px 0; padding: 12px 20px; background: #667eea; color: white; text-decoration: none; border-radius: 4px; transition: background 0.3s; }
-              .report-link:hover { background: #764ba2; }
-              .meta { font-size: 12px; color: #999; margin-top: 5px; }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <h1>📊 Nightly Coverage Reports</h1>
-              <div class="info">
-                <strong>Latest Report:</strong> Generated at $TIMESTAMP
-              </div>
-              <p>Click the button below to view the current coverage diff report:</p>
-              <a href="index.html" class="report-link">📈 View Latest Report</a>
-              <div class="meta">
-                <p>This report is automatically generated every day at 2:00 AM UTC.</p>
-                <p>It shows coverage changes, regressions, and new untested code.</p>
-              </div>
-            </div>
-          </body>
-          </html>
-          EOF
+          mkdir -p coverage-report
+          printf '%s\n' '<!DOCTYPE html>' '<html>' '<head>' '<meta charset="UTF-8">' '<meta name="viewport" content="width=device-width, initial-scale=1.0">' '<title>Coverage Reports</title>' '<style>' 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f5; padding: 20px; }' '.container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }' 'h1 { color: #667eea; margin-bottom: 10px; }' '.info { background: #eef2ff; padding: 15px; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #667eea; }' '.report-link { display: inline-block; margin: 10px 0; padding: 12px 20px; background: #667eea; color: white; text-decoration: none; border-radius: 4px; transition: background 0.3s; }' '.report-link:hover { background: #764ba2; }' '.meta { font-size: 12px; color: #999; margin-top: 5px; }' '</style>' '</head>' '<body>' '<div class="container">' '<h1>📊 Nightly Coverage Reports</h1>' '<div class="info">' '<strong>Latest Report:</strong> Generated at $TIMESTAMP' '</div>' '<p>Click the button below to view the current coverage diff report:</p>' '<a href="index.html" class="report-link">📈 View Latest Report</a>' '<div class="meta">' '<p>This report is automatically generated every day at 2:00 AM UTC.</p>' '<p>It shows coverage changes, regressions, and new untested code.</p>' '</div>' '</div>' '</body>' '</html>' > coverage-report/README.html
 
       - name: Update timestamp in index
         run: |
@@ -116,7 +64,7 @@ jobs:
         if: always()
         with:
           name: coverage-report-${{ github.run_id }}
-          path: coverage-report/
+          path: coverage-report/**
           retention-days: 30
 
       - name: Deploy to GitHub Pages
