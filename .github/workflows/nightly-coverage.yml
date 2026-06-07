@@ -39,16 +39,10 @@ jobs:
         continue-on-error: true
         run: npm run coverage:run 2>&1 || echo "Coverage run failed or skipped"
 
-      - name: Check coverage and create fallback report
+      - name: Generate coverage diff report
         run: |
           mkdir -p coverage-report
-          if [ ! -f coverage/coverage-final.json ]; then
-            echo "⚠️  Creating fallback report (no coverage data)..."
-            printf '%s\n' '<!DOCTYPE html>' '<html>' '<head>' '<meta charset="UTF-8">' '<title>Coverage Report - No Data</title>' '<style>' 'body { font-family: Arial, sans-serif; padding: 40px; text-align: center; background: #f5f5f5; }' '.container { background: white; padding: 30px; border-radius: 8px; max-width: 600px; margin: 0 auto; }' 'h1 { color: #f56565; }' 'p { color: #666; line-height: 1.6; }' '</style>' '</head>' '<body>' '<div class="container">' '<h1>⚠️ Coverage Report - No Data</h1>' '<p>Coverage tests did not complete successfully.</p>' '<p><a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View Workflow Logs for Details</a></p>' '</div>' '</body>' '</html>' > coverage-report/index.html
-          else
-            echo "✅ Coverage data found, generating diff report..."
-            npm run coverage:diff:html 2>&1 || true
-          fi
+          npm run coverage:diff:html 2>&1 || true
 
       - name: Create report index
         run: |
